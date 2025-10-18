@@ -1,0 +1,170 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutri100 Tracker v2 🌿</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #3e2a1f url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+    background-size: cover;
+    color: #f2e8d5;
+    overflow-x: hidden;
+  }header { text-align: center; padding: 20px; background: rgba(60, 40, 25, 0.85); box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+
+h1 { font-size: 2rem; color: #e3b573; letter-spacing: 1px; }
+
+.container { max-width: 800px; margin: 30px auto; padding: 20px; background: rgba(55, 35, 20, 0.8); border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.4); position: relative; }
+
+.checkbox { display: flex; align-items: center; margin: 10px 0; }
+
+input[type="checkbox"] { margin-right: 10px; transform: scale(1.2); }
+
+button { background: #d4a15d; border: none; color: #fff; padding: 10px 20px; border-radius: 8px; margin: 10px 5px; cursor: pointer; font-size: 1rem; transition: all 0.3s ease; }
+
+button:hover { background: #e3b573; }
+
+.progress { margin: 15px 0; }
+
+.progress-bar { height: 20px; border-radius: 10px; background: #5a4433; overflow: hidden; position: relative; }
+
+.fill { height: 100%; width: 0%; transition: width 0.4s ease; }
+
+.protein .fill { background: linear-gradient(90deg, #ff9f43, #ff6f00); } .vitamins .fill { background: linear-gradient(90deg, #7dd87d, #2e8b57); } .minerals .fill { background: linear-gradient(90deg, #5dade2, #154360); } .overall .fill { background: linear-gradient(90deg, #ffd700, #c49b00); }
+
+.vine { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; }
+
+.vine svg { position: absolute; width: 120%; height: 120%; animation: growVine 12s ease-in-out infinite alternate; }
+
+@keyframes growVine { 0% { opacity: 0.3; transform: scale(0.9) rotate(0deg); } 100% { opacity: 0.6; transform: scale(1.05) rotate(1deg); } }
+
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
+
+.modal-content { background: #4a3426; padding: 20px; border-radius: 10px; width: 90%; max-width: 500px; color: #f2e8d5; }
+
+.close-btn { background: #d4a15d; float: right; padding: 5px 10px; border-radius: 5px; cursor: pointer; } </style>
+
+</head>
+<body>
+  <div class="vine">
+    <svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,400 Q200,350 400,400 T800,400" fill="none" stroke="#2e8b57" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="200" cy="390" r="6" fill="#3cb371"/>
+      <circle cx="400" cy="410" r="5" fill="#4caf50"/>
+      <circle cx="600" cy="390" r="7" fill="#2e8b57"/>
+    </svg>
+  </div>  <header>
+    <h1>Nutri100 Tracker 🌿</h1>
+    <button onclick="viewHistory()">View History</button>
+    <button onclick="resetToday()">Reset Today</button>
+  </header>  <div class="container">
+    <h2>Daily Nutrition Checklist</h2>
+    <div class="checkbox-list" id="checklist"></div><div class="progress protein">
+  <label>Protein</label>
+  <div class="progress-bar"><div class="fill" id="proteinBar"></div></div>
+</div>
+<div class="progress vitamins">
+  <label>Vitamins</label>
+  <div class="progress-bar"><div class="fill" id="vitaminBar"></div></div>
+</div>
+<div class="progress minerals">
+  <label>Minerals</label>
+  <div class="progress-bar"><div class="fill" id="mineralBar"></div></div>
+</div>
+<div class="progress overall">
+  <label>Overall</label>
+  <div class="progress-bar"><div class="fill" id="overallBar"></div></div>
+</div>
+
+  </div>  <div id="historyModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeHistory()">✖</span>
+      <h2>Nutrition History</h2>
+      <div id="historyList"></div>
+    </div>
+  </div><script>
+const items = [
+  '1 glass milk (morning)',
+  '1 Omega-3 supplement (250 mg)',
+  'Handful of almonds',
+  'Rice at noon and night',
+  '1 banana',
+  'Curd (1 cup)',
+  '1 cup chickpeas + lemon juice',
+  '1 carrot',
+  '1 tangerine',
+  'Sunlight exposure (15-20 mins)',
+  '1 more cup of milk (evening)',
+  '5 Amul paneer cubes',
+  '2 tsp honey',
+  'Breakfast (any: chapati/upma/dosa/idli/puttu/idiappam with curry)'
+];
+
+const checklist = document.getElementById('checklist');
+items.forEach((item, index) => {
+  const div = document.createElement('div');
+  div.classList.add('checkbox');
+  div.innerHTML = `<input type='checkbox' id='item${index}' onchange='updateProgress()'> <label for='item${index}'>${item}</label>`;
+  checklist.appendChild(div);
+});
+
+function updateProgress() {
+  const total = items.length;
+  const checked = document.querySelectorAll('input[type="checkbox"]:checked').length;
+  const percent = (checked / total) * 100;
+
+  document.getElementById('overallBar').style.width = `${percent}%`;
+  document.getElementById('proteinBar').style.width = `${Math.min(percent * 1.1, 100)}%`;
+  document.getElementById('vitaminBar').style.width = `${Math.min(percent * 1.2, 100)}%`;
+  document.getElementById('mineralBar').style.width = `${Math.min(percent * 0.9, 100)}%`;
+
+  localStorage.setItem('nutriChecklist', JSON.stringify(
+    Array.from(document.querySelectorAll('input[type="checkbox"]')).map(cb => cb.checked)
+  ));
+}
+
+function loadProgress() {
+  const saved = JSON.parse(localStorage.getItem('nutriChecklist'));
+  if (saved) {
+    document.querySelectorAll('input[type="checkbox"]').forEach((cb, i) => cb.checked = saved[i]);
+    updateProgress();
+  }
+}
+
+function resetToday() {
+  const today = new Date().toLocaleDateString();
+  const total = items.length;
+  const checked = document.querySelectorAll('input[type="checkbox"]:checked').length;
+  const percent = Math.round((checked / total) * 100);
+
+  let history = JSON.parse(localStorage.getItem('nutriHistory')) || [];
+  history.push({ date: today, completion: percent });
+  localStorage.setItem('nutriHistory', JSON.stringify(history));
+
+  localStorage.removeItem('nutriChecklist');
+  document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+  updateProgress();
+  alert('Progress saved to history and reset for a new day! 🌿');
+}
+
+function viewHistory() {
+  const modal = document.getElementById('historyModal');
+  const historyList = document.getElementById('historyList');
+  const history = JSON.parse(localStorage.getItem('nutriHistory')) || [];
+
+  if (history.length === 0) {
+    historyList.innerHTML = '<p>No history recorded yet.</p>';
+  } else {
+    historyList.innerHTML = history.map(h => `<p><strong>${h.date}</strong>: ${h.completion}% complete</p>`).join('');
+  }
+  modal.style.display = 'flex';
+}
+
+function closeHistory() {
+  document.getElementById('historyModal').style.display = 'none';
+}
+
+loadProgress();
+</script></body>
+</html>
