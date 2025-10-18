@@ -3,44 +3,99 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Complete Daily Nutrition — Tracker</title>
+<title>Complete Daily Nutrition — Nutri100 (Woodland Theme, Background Flora)</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f6fbf6;
-  --card:#ffffffcc;
-  --glass: rgba(255,255,255,0.6);
-  --accent:#2f8f62;
-  --accent-2:#9ccf8f;
-  --muted:#6b6b6b;
-  --gold:#d4a86a;
-  --shadow: 0 6px 18px rgba(23,35,32,0.08);
-  --glass-shadow: 0 8px 30px rgba(15,30,20,0.08);
-  --glass-border: rgba(255,255,255,0.45);
+  /* Warm wood + golden accents */
+  --bg-wood-1: #38251b;
+  --bg-wood-2: #2a1610;
+  --panel: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.06);
+  --muted: #d8c3b5;
+  --accent-gold: #d4a86a;
+  --accent-green: #9fcf8f;
+  --card-shadow: 0 10px 30px rgba(14,9,7,0.6);
+  --glass-shadow: 0 8px 30px rgba(8,6,5,0.45);
+  --glass: rgba(255,255,255,0.02);
+  --glass-strong: rgba(255,255,255,0.06);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color-scheme: dark;
+  --fade-duration: 420ms;
 }
-*{box-sizing:border-box}
-body{
+
+/* ===========================
+   Page background (woodgrain)
+   =========================== */
+html,body{
+  height:100%;
   margin:0;
-  background: linear-gradient(180deg,#f0fbf4 0%, #eef7f1 60%);
-  color:#102016;
+  background:
+    /* soft matte highlight layer */
+    linear-gradient(180deg, rgba(255,244,235,0.03) 0%, rgba(0,0,0,0.12) 60%),
+    /* subtle woodgrain texture (repeating) */
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 48px),
+    /* base wood tones */
+    linear-gradient(180deg, var(--bg-wood-1), var(--bg-wood-2));
+  background-blend-mode: overlay, overlay, normal;
+  background-attachment: fixed, fixed, fixed;
+  background-size: cover, 48px 100%, cover;
+  background-repeat: no-repeat, repeat, no-repeat;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
-  padding:16px;
-  min-height:100vh;
+  padding:18px;
   display:flex;
-  flex-direction:column;
-  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  color:var(--muted);
+  overflow-x: hidden; /* avoid overflow from animations */
+}
+
+/* container to anchor the vine SVG and layout */
+.container {
+  width:100%;
+  max-width:960px;
+  position:relative;
+  z-index: 5; /* ensure UI sits above decorative background flora */
+}
+
+/* ===========================
+   Glassmorphism tweaks
+   =========================== */
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  border-radius:16px;
+  padding:16px;
+  box-shadow: var(--card-shadow);
+  border:1px solid rgba(255,255,255,0.035);
+  color: #fff2df;
+  position:relative;
+  overflow:hidden;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 6; /* keep content above background decorations */
+}
+
+/* subtle inner glow for panels to feel warm */
+.card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:16px;
+  box-shadow: 0 0 36px rgba(212,168,106,0.035) inset;
+  pointer-events:none;
 }
 
 /* Header */
 .header {
   width:100%;
-  max-width:920px;
   display:flex;
   gap:12px;
   align-items:center;
   justify-content:space-between;
   margin-bottom:14px;
+  animation: fadeIn var(--fade-duration) ease both;
 }
 .brand {
   display:flex;
@@ -51,27 +106,29 @@ body{
   width:56px;
   height:56px;
   border-radius:12px;
-  background: linear-gradient(135deg,var(--accent), #5fbf8a);
+  background: linear-gradient(135deg,#3d2419,#5b2e20);
   display:flex;
   align-items:center;
   justify-content:center;
-  color:white;
+  color:var(--accent-gold);
   font-weight:700;
-  box-shadow: var(--shadow);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6), 0 0 12px rgba(212,168,106,0.06) inset;
   position:relative;
   overflow:hidden;
+  border:1px solid rgba(255,255,255,0.02);
 }
 .logo::after{
   content:"";
   position:absolute;
-  width:120%;
-  height:120%;
-  background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.12), transparent 10%);
-  transform:translate(-10%,-10%) rotate(15deg);
+  width:140%;
+  height:140%;
+  background: radial-gradient(circle at 10% 20%, rgba(212,168,106,0.06), transparent 10%);
+  transform:translate(-20%,-20%) rotate(12deg);
 }
 .title {
   font-size:18px;
   font-weight:700;
+  color: #ffeecd;
   line-height:1;
 }
 .subtitle { font-size:12px; color:var(--muted) }
@@ -83,41 +140,36 @@ body{
   align-items:center;
 }
 .btn {
-  background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,250,250,0.8));
-  border:1px solid var(--glass-border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.04);
   backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   padding:8px 12px;
   border-radius:10px;
-  box-shadow:var(--glass-shadow);
+  box-shadow: var(--glass-shadow);
   cursor:pointer;
-  font-weight:600;
-  color:#08321a;
+  font-weight:700;
+  color:var(--muted);
+  transition: transform 160ms ease, box-shadow 160ms ease;
 }
+.btn:hover{ transform:translateY(-2px); box-shadow: 0 14px 28px rgba(0,0,0,0.55) }
 .btn.secondary{
   background:transparent;
-  border:1px solid rgba(15,40,20,0.06);
-  color:var(--accent);
+  border:1px solid rgba(212,168,106,0.12);
+  color:var(--accent-gold);
 }
 .hint{ font-size:12px;color:var(--muted) }
 
 /* Layout */
 .app {
   width:100%;
-  max-width:920px;
   display:grid;
   grid-template-columns: 1fr 360px;
   gap:18px;
   align-items:start;
 }
 
-/* Left card (checklist) */
-.card {
-  background:var(--card);
-  border-radius:16px;
-  padding:16px;
-  box-shadow:var(--shadow);
-  border:1px solid rgba(12,30,18,0.03);
-}
+/* Checklist + items */
 .checklist-title{
   display:flex;
   align-items:center;
@@ -127,43 +179,77 @@ body{
 .section-title {
   font-weight:700;
   font-size:16px;
+  color:#ffeecd;
 }
 .list {
   display:flex;
   flex-direction:column;
-  gap:8px;
+  gap:10px;
   margin-top:10px;
 }
 
-/* checklist items */
+/* items - translucent glass panels with smooth fade-in */
 .item {
   display:flex;
   align-items:center;
   gap:12px;
-  background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(250,250,250,0.6));
-  padding:10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  padding:12px;
   border-radius:12px;
-  border:1px solid rgba(10,30,20,0.04);
+  border:1px solid rgba(255,255,255,0.03);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: transform 220ms cubic-bezier(.2,.9,.3,1), box-shadow 220ms ease, opacity 320ms ease;
+  opacity:0;
+  transform: translateY(6px);
+  animation: itemPop var(--fade-duration) ease forwards;
 }
+.item:nth-child(1){ animation-delay: 80ms }
+.item:nth-child(2){ animation-delay: 140ms }
+.item:nth-child(3){ animation-delay: 200ms }
+.item:nth-child(4){ animation-delay: 260ms }
+.item:nth-child(5){ animation-delay: 320ms }
+.item:nth-child(6){ animation-delay: 380ms }
+.item:nth-child(7){ animation-delay: 440ms }
+.item:nth-child(8){ animation-delay: 500ms }
+.item:nth-child(9){ animation-delay: 560ms }
+.item:nth-child(10){ animation-delay: 620ms }
+.item:nth-child(11){ animation-delay: 680ms }
+.item:nth-child(12){ animation-delay: 740ms }
+.item:nth-child(13){ animation-delay: 800ms }
+.item:nth-child(14){ animation-delay: 860ms }
+.item:nth-child(15){ animation-delay: 920ms }
+.item:nth-child(16){ animation-delay: 980ms }
+.item:nth-child(17){ animation-delay: 1040ms }
+
+.item:hover{ transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.6) }
+
+/* checkbox */
 .item .cbox{
-  width:22px;
-  height:22px;
-  border-radius:6px;
+  width:26px;
+  height:26px;
+  border-radius:8px;
   display:inline-grid;
   place-items:center;
-  background:linear-gradient(180deg,#fff,#fbfffa);
-  border:1px solid rgba(0,0,0,0.06);
+  background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.04);
   cursor:pointer;
+  color:transparent;
+  transition: all 320ms cubic-bezier(.2,.9,.3,1);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.6);
+  font-weight:700;
 }
 .item .cbox.checked{
-  background:linear-gradient(180deg,var(--accent), #3aa36f);
-  color:white;
-  border:1px solid rgba(255,255,255,0.06);
-  box-shadow:0 6px 18px rgba(46,100,72,0.12);
+  background: linear-gradient(180deg, rgba(160,120,70,0.12), rgba(212,168,106,0.14));
+  color: var(--accent-gold);
+  border:1px solid rgba(212,168,106,0.22);
+  box-shadow: 0 8px 28px rgba(212,168,106,0.08);
+  transform: scale(1.02) rotate(-6deg);
 }
 .item .label{
   flex:1;
-  font-weight:600;
+  font-weight:700;
+  color:#fff6e6;
 }
 .item .meta { font-size:12px; color:var(--muted) }
 
@@ -175,9 +261,10 @@ body{
 .summary {
   padding:16px;
   border-radius:14px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(245,255,245,0.6));
-  border:1px solid rgba(12,30,18,0.04);
-  box-shadow:var(--glass-shadow);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.03);
+  box-shadow: var(--glass-shadow);
+  color:#fff3dd;
 }
 .stat {
   display:flex;
@@ -187,103 +274,162 @@ body{
   margin-bottom:8px;
 }
 .stat .label { color:var(--muted); font-size:13px }
-.stat .value { font-weight:700; color:#0d2b17 }
-.progress {
+.stat .value { font-weight:700; color:#fff7e9 }
+
+/* nutrient bars */
+.nutr-row{ margin-top:10px; }
+.nutr-label{ display:flex; justify-content:space-between; font-size:13px; color:var(--muted); margin-bottom:6px }
+.nutr-bar{
   height:12px;
-  background:linear-gradient(90deg,#e9f5ee,#f8fff9);
+  background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
   border-radius:8px;
   overflow:hidden;
-  border:1px solid rgba(0,0,0,0.03);
+  border:1px solid rgba(255,255,255,0.03);
 }
-.progress > i {
+.nutr-bar > i{
   display:block;
   height:100%;
-  background: linear-gradient(90deg,var(--accent), var(--accent-2));
   width:0%;
-  transition:width 700ms cubic-bezier(.2,.9,.3,1);
+  transition: width 620ms cubic-bezier(.2,.9,.3,1);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6) inset;
 }
+.nutr-protein { background: linear-gradient(90deg,#eab676,#d4a86a); }
+.nutr-vitamins { background: linear-gradient(90deg,#9fcf8f,#6fbf6a); }
+.nutr-minerals { background: linear-gradient(90deg,#7fcfcf,#6aa6b0); }
 
-/* leaf animation */
-.leaf-wrap{
-  position:absolute;
-  right:14px;
-  top:8px;
-  width:120px;
-  height:120px;
-  pointer-events:none;
-  opacity:0.9;
-}
-.leaf {
-  width:24px;
-  height:24px;
-  position:absolute;
-  left:0;
-  top:0;
-  transform-origin:center;
-  animation: floatLeaf 6s linear infinite;
-  filter: drop-shadow(0 6px 12px rgba(40,80,40,0.12));
-}
-@keyframes floatLeaf{
-  0%{ transform: translateY(0) rotate(0) }
-  25%{ transform: translateY(18px) rotate(8deg) }
-  50%{ transform: translateY(36px) rotate(-8deg) }
-  75%{ transform: translateY(18px) rotate(6deg) }
-  100%{ transform: translateY(0) rotate(0) }
-}
+/* ===========================
+   Leaves & subtle flora (BACKGROUND)
+   =========================== */
 
-/* history modal */
-.modal {
+/* floating single leaf — sways slowly across the screen (background) */
+.floating-leaf {
   position:fixed;
-  inset:0;
-  display:none;
+  top:10vh;
+  left:-8%;
+  width:56px;
+  height:56px;
+  display:flex;
   align-items:center;
   justify-content:center;
-  background:linear-gradient(0deg, rgba(6,10,8,0.45), rgba(6,10,8,0.2));
-  z-index:60;
+  z-index: 1; /* put behind UI (.container z-index:5) */
+  pointer-events:none;
+  opacity:0.84;
+  transform-origin:center;
+  animation: leafSwayAcross 18s linear infinite;
+  filter: drop-shadow(0 12px 20px rgba(0,0,0,0.45));
 }
-.modal .panel{
-  width:95%;
-  max-width:720px;
-  background:var(--card);
-  padding:16px;
-  border-radius:12px;
-  box-shadow:var(--shadow);
-  max-height:80vh;
-  overflow:auto;
-}
-.row { display:flex; gap:10px; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px dashed rgba(0,0,0,0.03) }
-.small{font-size:13px;color:var(--muted)}
 
-/* footer notes */
-.footer {
-  margin-top:18px;
-  font-size:13px;
-  color:var(--muted);
-  text-align:center;
+/* falling leaves container (JS spawns leaves into this) */
+.falling-leaves {
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:visible;
+  z-index: 1; /* background */
 }
+
+/* each falling leaf */
+.fleaf {
+  position:fixed;
+  width:22px;
+  height:22px;
+  opacity:0.0;
+  will-change: transform, opacity;
+  pointer-events:none;
+  transform-origin:center;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.45));
+}
+
+/* keyframes for falling leaves: drift down, rotate gently, fade in/out */
+@keyframes fallDown {
+  0% { transform: translate3d(var(--start-x,0), -10vh, 0) rotate(var(--r0,0deg)) scale(var(--s,1)); opacity:0 }
+  8% { opacity:0.85 }
+  60% { transform: translate3d(calc(var(--start-x,0) + var(--drift, 40px)), 55vh, 0) rotate(var(--r1, 20deg)) scale(var(--s,1)); opacity:0.9 }
+  100% { transform: translate3d(calc(var(--start-x,0) + var(--drift, 60px)), 110vh, 0) rotate(var(--r2, -10deg)) scale(var(--s,1)); opacity:0 }
+}
+
+/* floating leaf across screen - slow horizontal movement + subtle rotation */
+@keyframes leafSwayAcross {
+  0% { transform: translateX(-12vw) rotate(-6deg) translateY(0); opacity:0 }
+  10% { opacity:1 }
+  50% { transform: translateX(52vw) rotate(8deg) translateY(6vh); }
+  90% { opacity:1 }
+  100% { transform: translateX(110vw) rotate(-6deg) translateY(0); opacity:0 }
+}
+
+/* subtle vine border (SVG stroke animation) — moved behind the UI */
+.vine-svg {
+  position:absolute;
+  inset: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  z-index: 2; /* behind .container (5) and .card (6) */
+  pointer-events:none;
+  opacity:0.85;
+}
+.vine-path {
+  stroke: rgba(160,200,150,0.08);
+  stroke-width:2;
+  fill: none;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  transition: opacity 600ms ease;
+  animation: vineGrow 3000ms ease forwards 600ms;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.45));
+}
+
+/* draw a faint twining leaf accent */
+.vine-accent { fill: rgba(159,207,143,0.05); stroke: rgba(159,207,143,0.06); }
+
+/* animate vine stroke-dashoffset to create "growing" effect */
+@keyframes vineGrow {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ===========================
+   Accessibility & reduce motion
+   =========================== */
+@media (prefers-reduced-motion: reduce) {
+  .floating-leaf, .fleaf { animation: none !important; transition:none !important; display:none; }
+  .item { animation:none; transform:none; opacity:1; }
+  .vine-path { animation:none; stroke-dashoffset:0; }
+}
+
+/* small utilities */
+.small{font-size:13px;color:var(--muted)}
+@keyframes fadeIn { from{ opacity:0; transform:translateY(6px) } to{ opacity:1; transform:none } }
+@keyframes itemPop { to{ opacity:1; transform:none } }
 
 /* responsive */
 @media(max-width:900px){
   .app{ grid-template-columns: 1fr; }
-  .side{ position:static; }
-  .leaf-wrap{ display:none; }
+  .side{ position:static; margin-top:12px }
+  .floating-leaf{ display:none; }
 }
 </style>
 </head>
 <body>
-<div class="leaf-wrap" aria-hidden>
-  <!-- three leaves for subtle animation -->
-  <svg class="leaf" viewBox="0 0 24 24" style="left:8px; animation-delay:0s"><path fill="#2f8f62" d="M12 2C7 5 3 9 3 13c0 4 6 7 9 7s9-3 9-7c0-4-4-8-9-11z"/></svg>
-  <svg class="leaf" viewBox="0 0 24 24" style="left:44px; top:10px; animation-duration:8s; animation-delay:1s"><path fill="#7fcf8e" d="M12 2C7 5 3 9 3 13c0 4 6 7 9 7s9-3 9-7c0-4-4-8-9-11z"/></svg>
-  <svg class="leaf" viewBox="0 0 24 24" style="left:80px; top:18px; animation-duration:5s; animation-delay:0.5s"><path fill="#bfeec9" d="M12 2C7 5 3 9 3 13c0 4 6 7 9 7s9-3 9-7c0-4-4-8-9-11z"/></svg>
+<!-- falling leaves and floating leaf are decorative BACKGROUND elements.
+     They are intentionally placed outside the .container so they sit behind the UI.
+     pointer-events:none ensures they never block interactions or text selection.
+-->
+<div class="floating-leaf" aria-hidden>
+  <svg viewBox="0 0 24 24" width="56" height="56" aria-hidden="true">
+    <path fill="#cfe9c8" d="M12 2C7 5 3 9 3 13c0 4 6 7 9 7s9-3 9-7c0-4-4-8-9-11z"/>
+  </svg>
 </div>
 
+<div class="falling-leaves" id="fallingLeaves" aria-hidden="true"></div>
+
+<div class="container" id="pageContainer">
 <header class="header" role="banner">
   <div class="brand">
     <div class="logo">N</div>
     <div>
       <div class="title">Nutri100 — Daily Plan</div>
-      <div class="subtitle">Complete daily nutrition — follow this checklist</div>
+      <div class="subtitle">Warm wood edition — follow this checklist</div>
     </div>
   </div>
   <div class="controls">
@@ -292,11 +438,28 @@ body{
   </div>
 </header>
 
-<main class="app" role="main">
-  <section class="card">
+<!-- vine SVG overlay (subtle) — placed inside container but behind UI by lower z-index -->
+<svg class="vine-svg" aria-hidden="true" focusable="false" viewBox="0 0 100 100" preserveAspectRatio="none">
+  <path class="vine-path" d="
+    M2,20
+    C10,6 30,6 48,14
+    C62,20 78,22 96,12
+    M96,12
+    C90,24 84,36 84,50
+    C84,66 92,80 76,88
+    C60,96 40,92 26,86
+    C14,80 6,66 2,52
+    " />
+  <g transform="translate(6,70) scale(0.9)" class="vine-accent" >
+    <path d="M3 3 C8 0 12 0 15 4 C12 6 9 9 6 9 C4 8 2 6 3 3 Z"/>
+  </g>
+</svg>
+
+<main class="app" role="main" aria-live="polite">
+  <section class="card" aria-labelledby="checklistHeading">
     <div class="checklist-title">
       <div>
-        <div class="section-title">Today's Checklist</div>
+        <div id="checklistHeading" class="section-title">Today's Checklist</div>
         <div class="small">Tap each item as you complete it. This will auto-reset each day.</div>
       </div>
     </div>
@@ -318,23 +481,44 @@ body{
   </section>
 
   <aside class="side">
-    <div class="summary card">
+    <div class="summary card" aria-live="polite">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
         <div>
           <div class="small">Daily Completion</div>
-          <div style="font-weight:700;font-size:18px" id="percentText">0%</div>
+          <div style="font-weight:800;font-size:20px;color:#fff9e6" id="percentText">0%</div>
         </div>
         <div style="text-align:right">
           <div class="small">Date</div>
-          <div id="todayDate" style="font-weight:700"></div>
+          <div id="todayDate" style="font-weight:700;color:#fff7e0"></div>
         </div>
       </div>
 
-      <div class="stat"><div class="label">Meals Completed</div><div class="value" id="mealsDone">0 / 12</div></div>
+      <div class="stat"><div class="label">Items Completed</div><div class="value" id="mealsDone">0 / 17</div></div>
       <div style="height:8px"></div>
-      <div class="progress" aria-hidden><i id="progressBar" style="width:0%"></i></div>
+      <div class="progress" aria-hidden style="height:14px; background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,0.03);">
+        <i id="progressBar" style="display:block;height:100%;background: linear-gradient(90deg,#eab676,#9fcf8f); width:0%"></i>
+      </div>
 
-      <div style="height:12px"></div>
+      <div style="height:14px"></div>
+
+      <div class="small">Nutrient progress</div>
+
+      <div class="nutr-row" aria-hidden>
+        <div class="nutr-label"><span>Protein</span><span id="proteinText">0 / 60 g</span></div>
+        <div class="nutr-bar"><i id="proteinBar" class="nutr-protein" style="width:0%"></i></div>
+      </div>
+
+      <div class="nutr-row">
+        <div class="nutr-label"><span>Vitamins</span><span id="vitaminText">0 / 150 pts</span></div>
+        <div class="nutr-bar"><i id="vitaminBar" class="nutr-vitamins" style="width:0%"></i></div>
+      </div>
+
+      <div class="nutr-row">
+        <div class="nutr-label"><span>Minerals</span><span id="mineralText">0 / 80 pts</span></div>
+        <div class="nutr-bar"><i id="mineralBar" class="nutr-minerals" style="width:0%"></i></div>
+      </div>
+
+      <div style="height:10px"></div>
 
       <div class="small">Quick adjustments</div>
       <div style="display:flex;gap:8px;margin-top:8px">
@@ -346,8 +530,8 @@ body{
 </main>
 
 <!-- history modal -->
-<div class="modal" id="historyModal" role="dialog" aria-modal="true">
-  <div class="panel">
+<div class="modal" id="historyModal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="panel card">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
       <div style="font-weight:700">History</div>
       <button class="btn" id="closeHistory">Close</button>
@@ -361,70 +545,92 @@ body{
     </div>
   </div>
 </div>
+</div>
 
 <script>
-// Finalized checklist items (the optimized 100% plan)
+// ===========================
+// Data, state and UI (unchanged behavior, with improved history dedupe/safe-save)
+// ===========================
 const ITEMS = [
-  {id:'sun', label:'Sunlight (10-15 min morning)', note:'Vitamin D'},
-  {id:'breakfast', label:'Breakfast (Chapati/Upma/Idli/Dosa/Puttu + Curry)', note:'Carbs, B-vitamins'},
-  {id:'milk1', label:'Milk (200 ml)', note:'Calcium, B12'},
-  {id:'nuts', label:'Almonds + Peanuts (small handful)', note:'Vitamin E, Zinc'},
-  {id:'banana', label:'Banana', note:'Potassium, Magnesium'},
-  {id:'carrot', label:'Carrot (1 medium)', note:'Vitamin A'},
-  {id:'tangerine', label:'Tangerine or Orange', note:'Vitamin C'},
-  {id:'lunch_rice', label:'Lunch: Rice (1 cup)', note:''},
-  {id:'lunch_chick', label:'Lunch: Chickpeas (1 cup) + lemon', note:'Iron, Protein'},
-  {id:'spinach', label:'Spinach / Moringa (½ cup cooked)', note:'Vitamin K, Iron'},
-  {id:'honey', label:'Honey (2 tsp)', note:'Antioxidants'},
-  {id:'omega3', label:'Omega-3 capsule (250 mg)', note:'EPA/DHA'},
-  {id:'dinner_staple', label:'Dinner: Rice/2 Chapatis', note:''},
-  {id:'dinner_dal', label:'Dinner: Dal / Sambar', note:'Protein, B-vitamins'},
-  {id:'curd', label:'Curd (100 ml)', note:'Probiotics, Calcium'},
-  {id:'milk2', label:'Milk before bed (200 ml)', note:'Protein, Calcium'},
-  {id:'paneer', label:'Paneer (5 Amul cubes ~125 g)', note:'Protein, Calcium, B12'}
+  {id:'sun', label:'Sunlight (10-15 min morning)', note:'Vitamin D', protein:0, vitamins:12, minerals:2},
+  {id:'breakfast', label:'Breakfast (Chapati/Upma/Idli/Dosa/Puttu + Curry)', note:'Carbs, B-vitamins', protein:8, vitamins:14, minerals:6},
+  {id:'milk1', label:'Milk (200 ml)', note:'Calcium, B12', protein:7, vitamins:3, minerals:18},
+  {id:'nuts', label:'Almonds + Peanuts (small handful)', note:'Vitamin E, Zinc', protein:6, vitamins:4, minerals:10},
+  {id:'banana', label:'Banana', note:'Potassium, Magnesium', protein:1, vitamins:10, minerals:6},
+  {id:'carrot', label:'Carrot (1 medium)', note:'Vitamin A', protein:1, vitamins:12, minerals:2},
+  {id:'tangerine', label:'Tangerine or Orange', note:'Vitamin C', protein:1, vitamins:11, minerals:2},
+  {id:'lunch_rice', label:'Lunch: Rice (1 cup)', note:'', protein:4, vitamins:3, minerals:3},
+  {id:'lunch_chick', label:'Lunch: Chickpeas (1 cup) + lemon', note:'Iron, Protein', protein:15, vitamins:6, minerals:12},
+  {id:'spinach', label:'Spinach / Moringa (½ cup cooked)', note:'Vitamin K, Iron', protein:3, vitamins:16, minerals:10},
+  {id:'honey', label:'Honey (2 tsp)', note:'Antioxidants', protein:0, vitamins:2, minerals:0},
+  {id:'omega3', label:'Omega-3 capsule (250 mg)', note:'EPA/DHA', protein:0, vitamins:3, minerals:0},
+  {id:'dinner_staple', label:'Dinner: Rice/2 Chapatis', note:'', protein:5, vitamins:3, minerals:3},
+  {id:'dinner_dal', label:'Dinner: Dal / Sambar', note:'Protein, B-vitamins', protein:10, vitamins:5, minerals:6},
+  {id:'curd', label:'Curd (100 ml)', note:'Probiotics, Calcium', protein:5, vitamins:3, minerals:8},
+  {id:'milk2', label:'Milk before bed (200 ml)', note:'Protein, Calcium', protein:7, vitamins:2, minerals:12},
+  {id:'paneer', label:'Paneer (5 Amul cubes ~125 g)', note:'Protein, Calcium, B12', protein:18, vitamins:3, minerals:14}
 ];
 
-// helpers
+const GOALS = { protein:60, vitamins:150, minerals:80 };
 const today = () => (new Date()).toISOString().slice(0,10);
 const ls = window.localStorage;
 
-// initialize today date & load state
+// show date
 document.getElementById('todayDate').textContent = today();
 
+// load or initialize today's temp state
 function loadState(){
-  // if last saved date differs from today, create fresh
   const savedDate = ls.getItem('nutri_last_date');
   if(savedDate !== today()){
-    // push previous day's saved data into history if exists
+    // before resetting, try to save previous day's state (if any)
     const prev = ls.getItem('nutri_temp_state');
     if(prev){
       try{
-        const obj = JSON.parse(prev);
-        saveToHistory(obj);
+        const prevState = JSON.parse(prev);
+        // ensure we only save if meaningful and avoid duplicates
+        saveToHistoryDedup(prevState);
       }catch(e){}
     }
-    // reset temp state
-    const init = {date:today(), items: {}};
-    ITEMS.forEach(it => init.items[it.id]=false);
+    // reset temp state for new day
+    const init = {date:today(), items:{}};
+    ITEMS.forEach(it=> init.items[it.id]=false);
     ls.setItem('nutri_temp_state', JSON.stringify(init));
     ls.setItem('nutri_last_date', today());
   }
   return JSON.parse(ls.getItem('nutri_temp_state'));
 }
 
-function saveToHistory(state){
+// Save to history but avoid duplicate entries for same day (update if exists)
+function saveToHistoryDedup(state){
   const histKey = 'nutri_history';
   const raw = ls.getItem(histKey);
   let arr = raw ? JSON.parse(raw) : [];
-  // compute percent
   const total = ITEMS.length;
   let done = 0;
   for(let k in state.items) if(state.items[k]) done++;
   const entry = {date: state.date || today(), done, total, items: state.items, percent: Math.round(done/total*100), timestamp: Date.now()};
-  arr.unshift(entry);
-  // keep 90 days history
+  // if last saved history has same date, replace it with latest snapshot (avoid duplicates)
+  if(arr.length>0 && arr[0].date === entry.date){
+    arr[0] = entry;
+  } else {
+    arr.unshift(entry);
+  }
+  // cap history length
   arr = arr.slice(0, 180);
   ls.setItem(histKey, JSON.stringify(arr));
+}
+
+// small helper — save today's snapshot iff there's something to save or there is a savedAt
+function saveTodaySnapshotIfNeeded(){
+  const stateRaw = ls.getItem('nutri_temp_state');
+  if(!stateRaw) return;
+  const state = JSON.parse(stateRaw);
+  // consider it meaningful if any item checked OR a manual save timestamp exists
+  const anyChecked = Object.values(state.items || {}).some(v => v === true);
+  const hasSavedAt = !!state.savedAt;
+  if(anyChecked || hasSavedAt){
+    saveToHistoryDedup(state);
+  }
 }
 
 // render checklist
@@ -438,8 +644,12 @@ function render(){
     const cbox = document.createElement('div');
     cbox.className = 'cbox' + (state.items[it.id] ? ' checked' : '');
     cbox.setAttribute('data-id', it.id);
+    cbox.setAttribute('role','button');
+    cbox.setAttribute('aria-pressed', state.items[it.id] ? 'true' : 'false');
+    cbox.setAttribute('tabindex', '0');
     cbox.innerHTML = state.items[it.id] ? '&#10003;' : '';
     cbox.addEventListener('click', toggleItem);
+    cbox.addEventListener('keyup', (e)=>{ if(e.key===' '||e.key==='Enter') toggleItem(e); });
     const label = document.createElement('div'); label.className='label'; label.textContent = it.label;
     const meta = document.createElement('div'); meta.className='meta'; meta.textContent = it.note;
     div.appendChild(cbox); div.appendChild(label); div.appendChild(meta);
@@ -448,42 +658,82 @@ function render(){
   updateSummary();
 }
 
+// toggle item and persist immediately
 function toggleItem(e){
   const id = e.currentTarget.getAttribute('data-id');
   const state = JSON.parse(ls.getItem('nutri_temp_state'));
   state.items[id] = !state.items[id];
+  state.savedAt = Date.now();
   ls.setItem('nutri_temp_state', JSON.stringify(state));
   render();
   document.getElementById('lastSaved').textContent = new Date().toLocaleString();
 }
 
-// update progress
-function updateSummary(){
+// compute nutrient sums for checked items
+function computeNutrients(){
   const state = JSON.parse(ls.getItem('nutri_temp_state'));
-  let done = 0;
-  for(let k in state.items) if(state.items[k]) done++;
-  const total = ITEMS.length;
-  const percent = Math.round(done/total*100);
-  document.getElementById('percentText').textContent = percent + '%';
-  document.getElementById('mealsDone').textContent = done + ' / ' + total;
-  document.getElementById('progressBar').style.width = percent + '%';
+  let p=0, v=0, m=0, count=0;
+  ITEMS.forEach(it=>{
+    if(state.items[it.id]){
+      p += (it.protein || 0);
+      v += (it.vitamins || 0);
+      m += (it.minerals || 0);
+      count++;
+    }
+  });
+  return {protein:p, vitamins:v, minerals:m, count};
 }
 
-// save progress manually (also auto-saves on every toggle)
+// update summary
+function updateSummary(){
+  const state = JSON.parse(ls.getItem('nutri_temp_state'));
+  const nutrients = computeNutrients();
+  const total = ITEMS.length;
+  const percentItems = Math.round(nutrients.count/total*100);
+
+  const pPct = Math.min(100, Math.round(nutrients.protein / GOALS.protein * 100));
+  const vPct = Math.min(100, Math.round(nutrients.vitamins / GOALS.vitamins * 100));
+  const mPct = Math.min(100, Math.round(nutrients.minerals / GOALS.minerals * 100));
+  const overall = Math.round(( (pPct + vPct + mPct)/3 * 0.6 ) + (percentItems * 0.4));
+
+  document.getElementById('percentText').textContent = overall + '%';
+  document.getElementById('mealsDone').textContent = nutrients.count + ' / ' + total;
+  document.getElementById('progressBar').style.width = overall + '%';
+
+  document.getElementById('proteinText').textContent = Math.round(nutrients.protein) + ' / ' + GOALS.protein + ' g';
+  document.getElementById('vitaminText').textContent = Math.round(nutrients.vitamins) + ' / ' + GOALS.vitamins + ' pts';
+  document.getElementById('mineralText').textContent = Math.round(nutrients.minerals) + ' / ' + GOALS.minerals + ' pts';
+
+  document.getElementById('proteinBar').style.width = pPct + '%';
+  document.getElementById('vitaminBar').style.width = vPct + '%';
+  document.getElementById('mineralBar').style.width = mPct + '%';
+
+  const s = JSON.parse(ls.getItem('nutri_temp_state') || '{}');
+  if(s && s.savedAt) document.getElementById('lastSaved').textContent = new Date(s.savedAt).toLocaleString();
+}
+
+// save progress manually
 document.getElementById('saveBtn').addEventListener('click', ()=>{
   const state = JSON.parse(ls.getItem('nutri_temp_state'));
   state.savedAt = Date.now();
   ls.setItem('nutri_temp_state', JSON.stringify(state));
   document.getElementById('lastSaved').textContent = new Date().toLocaleString();
-  alert('Progress saved locally.');
+  // unobtrusive feedback
+  const t = document.createElement('div');
+  t.textContent = 'Progress saved locally.';
+  t.style.position='fixed'; t.style.right='18px'; t.style.bottom='18px';
+  t.style.background='linear-gradient(90deg, rgba(212,168,106,0.12), rgba(255,255,255,0.02))';
+  t.style.color='#fff6e6'; t.style.padding='8px 12px'; t.style.borderRadius='8px'; t.style.boxShadow='0 6px 24px rgba(0,0,0,0.6)';
+  document.body.appendChild(t);
+  setTimeout(()=> t.remove(), 1400);
 });
 
-// export CSV of today's items
+// export CSV of today's items (with nutrient columns)
 document.getElementById('exportBtn').addEventListener('click', ()=>{
   const state = JSON.parse(ls.getItem('nutri_temp_state'));
-  let csv = 'id,label,checked\\n';
+  let csv = 'id,label,checked,protein,vitamins,minerals\n';
   ITEMS.forEach(it=>{
-    csv += `${it.id},"${it.label}",${state.items[it.id] ? 1 : 0}\\n`;
+    csv += `${it.id},"${it.label}",${state.items[it.id] ? 1 : 0},${it.protein || 0},${it.vitamins || 0},${it.minerals || 0}\n`;
   });
   const blob = new Blob([csv], {type:'text/csv'});
   const url = URL.createObjectURL(blob);
@@ -491,15 +741,19 @@ document.getElementById('exportBtn').addEventListener('click', ()=>{
   URL.revokeObjectURL(url);
 });
 
-// auto daily reset at midnight (approx)
+// auto daily reset at midnight (improved: explicitly snapshot prior day before reset)
 function scheduleMidnightReset(){
   const now = new Date();
-  const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1,0,5,0) - now;
+  // schedule a little after midnight to avoid timezone edge cases
+  const msUntilNext = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1,0,5,0) - now;
   setTimeout(()=>{ 
-    // will create new state on next load and push previous to history
-    loadState(); render(); 
+    // Save today's snapshot (if meaningful) and dedupe; then reset
+    saveTodaySnapshotIfNeeded();
+    // trigger reset via loadState; it will create new state for new day
+    loadState();
+    render();
     scheduleMidnightReset();
-  }, msUntilMidnight);
+  }, msUntilNext);
 }
 
 // history modal
@@ -507,13 +761,19 @@ const historyModal = document.getElementById('historyModal');
 document.getElementById('historyBtn').addEventListener('click', ()=>{
   renderHistory();
   historyModal.style.display = 'flex';
+  historyModal.setAttribute('aria-hidden','false');
 });
-document.getElementById('closeHistory').addEventListener('click', ()=> historyModal.style.display='none');
+document.getElementById('closeHistory').addEventListener('click', ()=> {
+  historyModal.style.display='none';
+  historyModal.setAttribute('aria-hidden','true');
+});
 document.getElementById('clearHistory').addEventListener('click', ()=> {
-  if(confirm('Clear all saved history?')){ ls.removeItem('nutri_history'); renderHistory(); }
+  if(confirm('Clear all saved history?')){
+    ls.removeItem('nutri_history'); renderHistory();
+  }
 });
 
-// render history list
+// render history list (day-wise)
 function renderHistory(){
   const raw = ls.getItem('nutri_history');
   const arr = raw ? JSON.parse(raw) : [];
@@ -522,8 +782,10 @@ function renderHistory(){
   if(arr.length===0){ out.innerHTML = '<div class="small">No history yet. Your progress will be saved automatically each day.</div>'; return; }
   arr.forEach(entry=>{
     const row = document.createElement('div'); row.className='row';
-    const left = document.createElement('div'); left.innerHTML = `<div style="font-weight:700">${entry.date}</div><div class="small">${entry.done}/${entry.total} items</div>`;
-    const right = document.createElement('div'); right.innerHTML = `<div style="font-weight:700">${entry.percent}%</div><div class="small">${new Date(entry.timestamp).toLocaleString()}</div>`;
+    row.style.display='flex'; row.style.justifyContent='space-between'; row.style.alignItems='center';
+    row.style.padding='8px 0'; row.style.borderBottom='1px dashed rgba(255,255,255,0.04)';
+    const left = document.createElement('div'); left.innerHTML = `<div style="font-weight:700;color:#fff7e0">${entry.date}</div><div class="small" style="color:var(--muted)">${entry.done}/${entry.total} items</div>`;
+    const right = document.createElement('div'); right.innerHTML = `<div style="font-weight:700;color:#fff7e0">${entry.percent}%</div><div class="small" style="color:var(--muted)">${new Date(entry.timestamp).toLocaleString()}</div>`;
     row.appendChild(left); row.appendChild(right);
     out.appendChild(row);
   });
@@ -533,7 +795,7 @@ function renderHistory(){
 document.getElementById('resetBtn').addEventListener('click', ()=>{
   if(confirm('Reset today checklist? This will save current state to history.')){
     const state = JSON.parse(ls.getItem('nutri_temp_state'));
-    saveToHistory(state);
+    saveToHistoryDedup(state);
     ls.removeItem('nutri_temp_state');
     ls.setItem('nutri_last_date','1970-01-01'); // force new state
     loadState(); render();
@@ -545,11 +807,13 @@ document.getElementById('resetBtn').addEventListener('click', ()=>{
 document.getElementById('addSpinBtn').addEventListener('click', ()=>{
   const state = JSON.parse(ls.getItem('nutri_temp_state'));
   state.items['spinach'] = true;
+  state.savedAt = Date.now();
   ls.setItem('nutri_temp_state', JSON.stringify(state)); render();
 });
 document.getElementById('addNutsBtn').addEventListener('click', ()=>{
   const state = JSON.parse(ls.getItem('nutri_temp_state'));
   state.items['nuts'] = true;
+  state.savedAt = Date.now();
   ls.setItem('nutri_temp_state', JSON.stringify(state)); render();
 });
 
@@ -557,15 +821,117 @@ document.getElementById('addNutsBtn').addEventListener('click', ()=>{
 document.getElementById('downloadHistory').addEventListener('click', ()=>{
   const raw = ls.getItem('nutri_history');
   const arr = raw ? JSON.parse(raw) : [];
-  let csv = 'date,percent,done,total,timestamp\\n';
-  arr.forEach(e => csv += `${e.date},${e.percent},${e.done},${e.total},${e.timestamp}\\n`);
+  let csv = 'date,percent,done,total,timestamp\n';
+  arr.forEach(e => csv += `${e.date},${e.percent},${e.done},${e.total},${e.timestamp}\n`);
   const blob = new Blob([csv], {type:'text/csv'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href=url; a.download='nutrition_history.csv'; a.click();
   URL.revokeObjectURL(url);
 });
 
-// on load
+// On unload, attempt to snapshot today's state (helps if user closes tab before midnight)
+window.addEventListener('beforeunload', ()=> {
+  try { saveTodaySnapshotIfNeeded(); } catch(e){}
+});
+
+// ===========================
+// Enhanced visuals: falling leaves + gentle floating leaf + vine behaviour (background only)
+// ===========================
+const fallingContainer = document.getElementById('fallingLeaves');
+const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// function to create a single falling leaf with randomized parameters
+function spawnLeaf() {
+  if (prefersReduced) return;
+  const leaf = document.createElement('div');
+  leaf.className = 'fleaf';
+  // randomize size, start x (vw), drift and rotation
+  const size = (Math.random() * 14) + 12; // 12-26 px
+  const startX = Math.random() * 100; // vw percent
+  const rotationStart = (Math.random() * 30) - 15 + 'deg';
+  const rotationMid = (Math.random() * 40) - 20 + 'deg';
+  const rotationEnd = (Math.random() * 40) - 20 + 'deg';
+  const duration = (Math.random() * 6) + 8; // 8-14s
+
+  leaf.style.width = size + 'px';
+  leaf.style.height = size + 'px';
+  leaf.style.setProperty('--start-x', startX + 'vw');
+  leaf.style.setProperty('--drift', (Math.random() * 140 - 70) + 'px');
+  leaf.style.setProperty('--r0', rotationStart);
+  leaf.style.setProperty('--r1', rotationMid);
+  leaf.style.setProperty('--r2', rotationEnd);
+  leaf.style.setProperty('--s', (size / 18).toFixed(2));
+
+  // create an inline svg leaf (soft colors)
+  leaf.innerHTML = `<svg viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true">
+    <path fill="${randomLeafFill()}" d="M12 2C7 5 3 9 3 13c0 4 6 7 9 7s9-3 9-7c0-4-4-8-9-11z"/>
+  </svg>`;
+
+  // apply animation
+  leaf.style.animation = `fallDown ${duration}s linear 0s forwards`;
+  fallingContainer.appendChild(leaf);
+
+  // remove after animation
+  setTimeout(()=> {
+    leaf.remove();
+  }, (duration + 0.6) * 1000);
+}
+
+function randomLeafFill(){
+  const palette = ['#bfeec9','#e5c98a','#cbd8b9','#9ecf91','#d7e7c8'];
+  return palette[Math.floor(Math.random()*palette.length)];
+}
+
+let leafTimer = null;
+function startLeafSpawn(){
+  if (prefersReduced) return;
+  function schedule(){
+    const count = Math.floor(Math.random()*3) + 1;
+    for(let i=0;i<count;i++){
+      setTimeout(spawnLeaf, i*220 + Math.random()*450);
+    }
+    const next = 3000 + Math.random()*8000; // 3s - 11s
+    leafTimer = setTimeout(schedule, next);
+  }
+  schedule();
+}
+function stopLeafSpawn(){
+  clearTimeout(leafTimer);
+  leafTimer = null;
+}
+
+if (!prefersReduced) startLeafSpawn();
+window.addEventListener('pagehide', ()=> stopLeafSpawn());
+
+// Hide floating leaf for reduced motion users
+if (prefersReduced){
+  const fl = document.querySelector('.floating-leaf');
+  if (fl) fl.style.display = 'none';
+}
+
+// Vine subtle pulse on interaction: slightly increase opacity when mouse enters container
+const pageContainer = document.getElementById('pageContainer');
+const vine = document.querySelector('.vine-path');
+if (pageContainer && vine && !prefersReduced) {
+  pageContainer.addEventListener('mouseenter', ()=> vine.style.opacity = '1');
+  pageContainer.addEventListener('mouseleave', ()=> vine.style.opacity = '0.85');
+  setTimeout(()=> vine.style.opacity = '1', 900);
+  setTimeout(()=> vine.style.opacity = '0.92', 2400);
+}
+
+// Ensure pressing Escape closes history modal
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape'){
+    if(historyModal.style.display === 'flex'){
+      historyModal.style.display = 'none';
+      historyModal.setAttribute('aria-hidden','true');
+    }
+  }
+});
+
+// ===========================
+// Boot sequence: ensure state exists and UI is current
+// ===========================
 loadState();
 render();
 scheduleMidnightReset();
