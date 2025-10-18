@@ -1,170 +1,574 @@
-<!DOCTYPE html><html lang="en">
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nutri100 Tracker v2 🌿</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Complete Daily Nutrition — Tracker</title>
 <style>
-  body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: #3e2a1f url('https://www.transparenttextures.com/patterns/wood-pattern.png');
-    background-size: cover;
-    color: #f2e8d5;
-    overflow-x: hidden;
-  }header { text-align: center; padding: 20px; background: rgba(60, 40, 25, 0.85); box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+:root{
+  --bg:#f6fbf6;
+  --card:#ffffffcc;
+  --glass: rgba(255,255,255,0.6);
+  --accent:#2f8f62;
+  --accent-2:#9ccf8f;
+  --muted:#6b6b6b;
+  --gold:#d4a86a;
+  --shadow: 0 6px 18px rgba(23,35,32,0.08);
+  --glass-shadow: 0 8px 30px rgba(15,30,20,0.08);
+  --glass-border: rgba(255,255,255,0.45);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background: linear-gradient(180deg,#f0fbf4 0%, #eef7f1 60%);
+  color:#102016;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  padding:16px;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
 
-h1 { font-size: 2rem; color: #e3b573; letter-spacing: 1px; }
+/* Header */
+.header {
+  width:100%;
+  max-width:920px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+.brand {
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.logo {
+  width:56px;
+  height:56px;
+  border-radius:12px;
+  background: linear-gradient(135deg,var(--accent), #5fbf8a);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-weight:700;
+  box-shadow: var(--shadow);
+  position:relative;
+  overflow:hidden;
+}
+.logo::after{
+  content:"";
+  position:absolute;
+  width:120%;
+  height:120%;
+  background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.12), transparent 10%);
+  transform:translate(-10%,-10%) rotate(15deg);
+}
+.title {
+  font-size:18px;
+  font-weight:700;
+  line-height:1;
+}
+.subtitle { font-size:12px; color:var(--muted) }
 
-.container { max-width: 800px; margin: 30px auto; padding: 20px; background: rgba(55, 35, 20, 0.8); border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.4); position: relative; }
+/* Top controls */
+.controls {
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.btn {
+  background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,250,250,0.8));
+  border:1px solid var(--glass-border);
+  backdrop-filter: blur(6px);
+  padding:8px 12px;
+  border-radius:10px;
+  box-shadow:var(--glass-shadow);
+  cursor:pointer;
+  font-weight:600;
+  color:#08321a;
+}
+.btn.secondary{
+  background:transparent;
+  border:1px solid rgba(15,40,20,0.06);
+  color:var(--accent);
+}
+.hint{ font-size:12px;color:var(--muted) }
 
-.checkbox { display: flex; align-items: center; margin: 10px 0; }
+/* Layout */
+.app {
+  width:100%;
+  max-width:920px;
+  display:grid;
+  grid-template-columns: 1fr 360px;
+  gap:18px;
+  align-items:start;
+}
 
-input[type="checkbox"] { margin-right: 10px; transform: scale(1.2); }
+/* Left card (checklist) */
+.card {
+  background:var(--card);
+  border-radius:16px;
+  padding:16px;
+  box-shadow:var(--shadow);
+  border:1px solid rgba(12,30,18,0.03);
+}
+.checklist-title{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:8px;
+}
+.section-title {
+  font-weight:700;
+  font-size:16px;
+}
+.list {
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:10px;
+}
 
-button { background: #d4a15d; border: none; color: #fff; padding: 10px 20px; border-radius: 8px; margin: 10px 5px; cursor: pointer; font-size: 1rem; transition: all 0.3s ease; }
+/* checklist items */
+.item {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(250,250,250,0.6));
+  padding:10px;
+  border-radius:12px;
+  border:1px solid rgba(10,30,20,0.04);
+}
+.item .cbox{
+  width:22px;
+  height:22px;
+  border-radius:6px;
+  display:inline-grid;
+  place-items:center;
+  background:linear-gradient(180deg,#fff,#fbfffa);
+  border:1px solid rgba(0,0,0,0.06);
+  cursor:pointer;
+}
+.item .cbox.checked{
+  background:linear-gradient(180deg,var(--accent), #3aa36f);
+  color:white;
+  border:1px solid rgba(255,255,255,0.06);
+  box-shadow:0 6px 18px rgba(46,100,72,0.12);
+}
+.item .label{
+  flex:1;
+  font-weight:600;
+}
+.item .meta { font-size:12px; color:var(--muted) }
 
-button:hover { background: #e3b573; }
+/* right panel (summary) */
+.side {
+  position:sticky;
+  top:18px;
+}
+.summary {
+  padding:16px;
+  border-radius:14px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(245,255,245,0.6));
+  border:1px solid rgba(12,30,18,0.04);
+  box-shadow:var(--glass-shadow);
+}
+.stat {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:8px;
+}
+.stat .label { color:var(--muted); font-size:13px }
+.stat .value { font-weight:700; color:#0d2b17 }
+.progress {
+  height:12px;
+  background:linear-gradient(90deg,#e9f5ee,#f8fff9);
+  border-radius:8px;
+  overflow:hidden;
+  border:1px solid rgba(0,0,0,0.03);
+}
+.progress > i {
+  display:block;
+  height:100%;
+  background: linear-gradient(90deg,var(--accent), var(--accent-2));
+  width:0%;
+  transition:width 700ms cubic-bezier(.2,.9,.3,1);
+}
 
-.progress { margin: 15px 0; }
+/* leaf animation */
+.leaf-wrap{
+  position:absolute;
+  right:14px;
+  top:8px;
+  width:120px;
+  height:120px;
+  pointer-events:none;
+  opacity:0.9;
+}
+.leaf {
+  width:24px;
+  height:24px;
+  position:absolute;
+  left:0;
+  top:0;
+  transform-origin:center;
+  animation: floatLeaf 6s linear infinite;
+  filter: drop-shadow(0 6px 12px rgba(40,80,40,0.12));
+}
+@keyframes floatLeaf{
+  0%{ transform: translateY(0) rotate(0) }
+  25%{ transform: translateY(18px) rotate(8deg) }
+  50%{ transform: translateY(36px) rotate(-8deg) }
+  75%{ transform: translateY(18px) rotate(6deg) }
+  100%{ transform: translateY(0) rotate(0) }
+}
 
-.progress-bar { height: 20px; border-radius: 10px; background: #5a4433; overflow: hidden; position: relative; }
+/* history modal */
+.modal {
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(0deg, rgba(6,10,8,0.45), rgba(6,10,8,0.2));
+  z-index:60;
+}
+.modal .panel{
+  width:95%;
+  max-width:720px;
+  background:var(--card);
+  padding:16px;
+  border-radius:12px;
+  box-shadow:var(--shadow);
+  max-height:80vh;
+  overflow:auto;
+}
+.row { display:flex; gap:10px; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px dashed rgba(0,0,0,0.03) }
+.small{font-size:13px;color:var(--muted)}
 
-.fill { height: 100%; width: 0%; transition: width 0.4s ease; }
+/* footer notes */
+.footer {
+  margin-top:18px;
+  font-size:13px;
+  color:var(--muted);
+  text-align:center;
+}
 
-.protein .fill { background: linear-gradient(90deg, #ff9f43, #ff6f00); } .vitamins .fill { background: linear-gradient(90deg, #7dd87d, #2e8b57); } .minerals .fill { background: linear-gradient(90deg, #5dade2, #154360); } .overall .fill { background: linear-gradient(90deg, #ffd700, #c49b00); }
-
-.vine { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; }
-
-.vine svg { position: absolute; width: 120%; height: 120%; animation: growVine 12s ease-in-out infinite alternate; }
-
-@keyframes growVine { 0% { opacity: 0.3; transform: scale(0.9) rotate(0deg); } 100% { opacity: 0.6; transform: scale(1.05) rotate(1deg); } }
-
-.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
-
-.modal-content { background: #4a3426; padding: 20px; border-radius: 10px; width: 90%; max-width: 500px; color: #f2e8d5; }
-
-.close-btn { background: #d4a15d; float: right; padding: 5px 10px; border-radius: 5px; cursor: pointer; } </style>
-
+/* responsive */
+@media(max-width:900px){
+  .app{ grid-template-columns: 1fr; }
+  .side{ position:static; }
+  .leaf-wrap{ display:none; }
+}
+</style>
 </head>
 <body>
-  <div class="vine">
-    <svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,400 Q200,350 400,400 T800,400" fill="none" stroke="#2e8b57" stroke-width="4" stroke-linecap="round"/>
-      <circle cx="200" cy="390" r="6" fill="#3cb371"/>
-      <circle cx="400" cy="410" r="5" fill="#4caf50"/>
-      <circle cx="600" cy="390" r="7" fill="#2e8b57"/>
-    </svg>
-  </div>  <header>
-    <h1>Nutri100 Tracker 🌿</h1>
-    <button onclick="viewHistory()">View History</button>
-    <button onclick="resetToday()">Reset Today</button>
-  </header>  <div class="container">
-    <h2>Daily Nutrition Checklist</h2>
-    <div class="checkbox-list" id="checklist"></div><div class="progress protein">
-  <label>Protein</label>
-  <div class="progress-bar"><div class="fill" id="proteinBar"></div></div>
-</div>
-<div class="progress vitamins">
-  <label>Vitamins</label>
-  <div class="progress-bar"><div class="fill" id="vitaminBar"></div></div>
-</div>
-<div class="progress minerals">
-  <label>Minerals</label>
-  <div class="progress-bar"><div class="fill" id="mineralBar"></div></div>
-</div>
-<div class="progress overall">
-  <label>Overall</label>
-  <div class="progress-bar"><div class="fill" id="overallBar"></div></div>
+<div class="leaf-wrap" aria-hidden>
+  <!-- three leaves for subtle animation -->
+  <svg class="leaf" viewBox="0 0 24 24" style="left:8px; animation-delay:0s"><path fill="#2f8f62" d="M12 2C7 5 3 9 3 13c0 4 6 7 9 7s9-3 9-7c0-4-4-8-9-11z"/></svg>
+  <svg class="leaf" viewBox="0 0 24 24" style="left:44px; top:10px; animation-duration:8s; animation-delay:1s"><path fill="#7fcf8e" d="M12 2C7 5 3 9 3 13c0 4 6 7 9 7s9-3 9-7c0-4-4-8-9-11z"/></svg>
+  <svg class="leaf" viewBox="0 0 24 24" style="left:80px; top:18px; animation-duration:5s; animation-delay:0.5s"><path fill="#bfeec9" d="M12 2C7 5 3 9 3 13c0 4 6 7 9 7s9-3 9-7c0-4-4-8-9-11z"/></svg>
 </div>
 
-  </div>  <div id="historyModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeHistory()">✖</span>
-      <h2>Nutrition History</h2>
-      <div id="historyList"></div>
+<header class="header" role="banner">
+  <div class="brand">
+    <div class="logo">N</div>
+    <div>
+      <div class="title">Nutri100 — Daily Plan</div>
+      <div class="subtitle">Complete daily nutrition — follow this checklist</div>
     </div>
-  </div><script>
-const items = [
-  '1 glass milk (morning)',
-  '1 Omega-3 supplement (250 mg)',
-  'Handful of almonds',
-  'Rice at noon and night',
-  '1 banana',
-  'Curd (1 cup)',
-  '1 cup chickpeas + lemon juice',
-  '1 carrot',
-  '1 tangerine',
-  'Sunlight exposure (15-20 mins)',
-  '1 more cup of milk (evening)',
-  '5 Amul paneer cubes',
-  '2 tsp honey',
-  'Breakfast (any: chapati/upma/dosa/idli/puttu/idiappam with curry)'
+  </div>
+  <div class="controls">
+    <button class="btn" id="historyBtn" title="View past days">View History</button>
+    <button class="btn secondary" id="resetBtn" title="Reset today">Reset Today</button>
+  </div>
+</header>
+
+<main class="app" role="main">
+  <section class="card">
+    <div class="checklist-title">
+      <div>
+        <div class="section-title">Today's Checklist</div>
+        <div class="small">Tap each item as you complete it. This will auto-reset each day.</div>
+      </div>
+    </div>
+
+    <div class="list" id="checklist">
+      <!-- items injected by JS -->
+    </div>
+
+    <div style="margin-top:12px; display:flex; gap:8px; align-items:center;">
+      <button class="btn" id="saveBtn">Save Progress</button>
+      <button class="btn secondary" id="exportBtn">Export CSV</button>
+      <div style="flex:1"></div>
+      <div class="small">Last saved: <span id="lastSaved">Never</span></div>
+    </div>
+
+    <div class="footer">
+      Tip: Try to finish all items before bedtime. The checklist resets automatically each day at midnight.
+    </div>
+  </section>
+
+  <aside class="side">
+    <div class="summary card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div>
+          <div class="small">Daily Completion</div>
+          <div style="font-weight:700;font-size:18px" id="percentText">0%</div>
+        </div>
+        <div style="text-align:right">
+          <div class="small">Date</div>
+          <div id="todayDate" style="font-weight:700"></div>
+        </div>
+      </div>
+
+      <div class="stat"><div class="label">Meals Completed</div><div class="value" id="mealsDone">0 / 12</div></div>
+      <div style="height:8px"></div>
+      <div class="progress" aria-hidden><i id="progressBar" style="width:0%"></i></div>
+
+      <div style="height:12px"></div>
+
+      <div class="small">Quick adjustments</div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn" id="addSpinBtn">I ate greens</button>
+        <button class="btn secondary" id="addNutsBtn">Ate nuts</button>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<!-- history modal -->
+<div class="modal" id="historyModal" role="dialog" aria-modal="true">
+  <div class="panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div style="font-weight:700">History</div>
+      <button class="btn" id="closeHistory">Close</button>
+    </div>
+    <div id="historyList">
+      <!-- history entries -->
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button class="btn" id="clearHistory">Clear History</button>
+      <button class="btn secondary" id="downloadHistory">Download CSV</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Finalized checklist items (the optimized 100% plan)
+const ITEMS = [
+  {id:'sun', label:'Sunlight (10-15 min morning)', note:'Vitamin D'},
+  {id:'breakfast', label:'Breakfast (Chapati/Upma/Idli/Dosa/Puttu + Curry)', note:'Carbs, B-vitamins'},
+  {id:'milk1', label:'Milk (200 ml)', note:'Calcium, B12'},
+  {id:'nuts', label:'Almonds + Peanuts (small handful)', note:'Vitamin E, Zinc'},
+  {id:'banana', label:'Banana', note:'Potassium, Magnesium'},
+  {id:'carrot', label:'Carrot (1 medium)', note:'Vitamin A'},
+  {id:'tangerine', label:'Tangerine or Orange', note:'Vitamin C'},
+  {id:'lunch_rice', label:'Lunch: Rice (1 cup)', note:''},
+  {id:'lunch_chick', label:'Lunch: Chickpeas (1 cup) + lemon', note:'Iron, Protein'},
+  {id:'spinach', label:'Spinach / Moringa (½ cup cooked)', note:'Vitamin K, Iron'},
+  {id:'honey', label:'Honey (2 tsp)', note:'Antioxidants'},
+  {id:'omega3', label:'Omega-3 capsule (250 mg)', note:'EPA/DHA'},
+  {id:'dinner_staple', label:'Dinner: Rice/2 Chapatis', note:''},
+  {id:'dinner_dal', label:'Dinner: Dal / Sambar', note:'Protein, B-vitamins'},
+  {id:'curd', label:'Curd (100 ml)', note:'Probiotics, Calcium'},
+  {id:'milk2', label:'Milk before bed (200 ml)', note:'Protein, Calcium'},
+  {id:'paneer', label:'Paneer (5 Amul cubes ~125 g)', note:'Protein, Calcium, B12'}
 ];
 
-const checklist = document.getElementById('checklist');
-items.forEach((item, index) => {
-  const div = document.createElement('div');
-  div.classList.add('checkbox');
-  div.innerHTML = `<input type='checkbox' id='item${index}' onchange='updateProgress()'> <label for='item${index}'>${item}</label>`;
-  checklist.appendChild(div);
+// helpers
+const today = () => (new Date()).toISOString().slice(0,10);
+const ls = window.localStorage;
+
+// initialize today date & load state
+document.getElementById('todayDate').textContent = today();
+
+function loadState(){
+  // if last saved date differs from today, create fresh
+  const savedDate = ls.getItem('nutri_last_date');
+  if(savedDate !== today()){
+    // push previous day's saved data into history if exists
+    const prev = ls.getItem('nutri_temp_state');
+    if(prev){
+      try{
+        const obj = JSON.parse(prev);
+        saveToHistory(obj);
+      }catch(e){}
+    }
+    // reset temp state
+    const init = {date:today(), items: {}};
+    ITEMS.forEach(it => init.items[it.id]=false);
+    ls.setItem('nutri_temp_state', JSON.stringify(init));
+    ls.setItem('nutri_last_date', today());
+  }
+  return JSON.parse(ls.getItem('nutri_temp_state'));
+}
+
+function saveToHistory(state){
+  const histKey = 'nutri_history';
+  const raw = ls.getItem(histKey);
+  let arr = raw ? JSON.parse(raw) : [];
+  // compute percent
+  const total = ITEMS.length;
+  let done = 0;
+  for(let k in state.items) if(state.items[k]) done++;
+  const entry = {date: state.date || today(), done, total, items: state.items, percent: Math.round(done/total*100), timestamp: Date.now()};
+  arr.unshift(entry);
+  // keep 90 days history
+  arr = arr.slice(0, 180);
+  ls.setItem(histKey, JSON.stringify(arr));
+}
+
+// render checklist
+function render(){
+  const state = loadState();
+  const container = document.getElementById('checklist');
+  container.innerHTML = '';
+  ITEMS.forEach(it=>{
+    const div = document.createElement('div');
+    div.className = 'item';
+    const cbox = document.createElement('div');
+    cbox.className = 'cbox' + (state.items[it.id] ? ' checked' : '');
+    cbox.setAttribute('data-id', it.id);
+    cbox.innerHTML = state.items[it.id] ? '&#10003;' : '';
+    cbox.addEventListener('click', toggleItem);
+    const label = document.createElement('div'); label.className='label'; label.textContent = it.label;
+    const meta = document.createElement('div'); meta.className='meta'; meta.textContent = it.note;
+    div.appendChild(cbox); div.appendChild(label); div.appendChild(meta);
+    container.appendChild(div);
+  });
+  updateSummary();
+}
+
+function toggleItem(e){
+  const id = e.currentTarget.getAttribute('data-id');
+  const state = JSON.parse(ls.getItem('nutri_temp_state'));
+  state.items[id] = !state.items[id];
+  ls.setItem('nutri_temp_state', JSON.stringify(state));
+  render();
+  document.getElementById('lastSaved').textContent = new Date().toLocaleString();
+}
+
+// update progress
+function updateSummary(){
+  const state = JSON.parse(ls.getItem('nutri_temp_state'));
+  let done = 0;
+  for(let k in state.items) if(state.items[k]) done++;
+  const total = ITEMS.length;
+  const percent = Math.round(done/total*100);
+  document.getElementById('percentText').textContent = percent + '%';
+  document.getElementById('mealsDone').textContent = done + ' / ' + total;
+  document.getElementById('progressBar').style.width = percent + '%';
+}
+
+// save progress manually (also auto-saves on every toggle)
+document.getElementById('saveBtn').addEventListener('click', ()=>{
+  const state = JSON.parse(ls.getItem('nutri_temp_state'));
+  state.savedAt = Date.now();
+  ls.setItem('nutri_temp_state', JSON.stringify(state));
+  document.getElementById('lastSaved').textContent = new Date().toLocaleString();
+  alert('Progress saved locally.');
 });
 
-function updateProgress() {
-  const total = items.length;
-  const checked = document.querySelectorAll('input[type="checkbox"]:checked').length;
-  const percent = (checked / total) * 100;
+// export CSV of today's items
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  const state = JSON.parse(ls.getItem('nutri_temp_state'));
+  let csv = 'id,label,checked\\n';
+  ITEMS.forEach(it=>{
+    csv += `${it.id},"${it.label}",${state.items[it.id] ? 1 : 0}\\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = `nutri_today_${state.date}.csv`; a.click();
+  URL.revokeObjectURL(url);
+});
 
-  document.getElementById('overallBar').style.width = `${percent}%`;
-  document.getElementById('proteinBar').style.width = `${Math.min(percent * 1.1, 100)}%`;
-  document.getElementById('vitaminBar').style.width = `${Math.min(percent * 1.2, 100)}%`;
-  document.getElementById('mineralBar').style.width = `${Math.min(percent * 0.9, 100)}%`;
-
-  localStorage.setItem('nutriChecklist', JSON.stringify(
-    Array.from(document.querySelectorAll('input[type="checkbox"]')).map(cb => cb.checked)
-  ));
+// auto daily reset at midnight (approx)
+function scheduleMidnightReset(){
+  const now = new Date();
+  const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1,0,5,0) - now;
+  setTimeout(()=>{ 
+    // will create new state on next load and push previous to history
+    loadState(); render(); 
+    scheduleMidnightReset();
+  }, msUntilMidnight);
 }
 
-function loadProgress() {
-  const saved = JSON.parse(localStorage.getItem('nutriChecklist'));
-  if (saved) {
-    document.querySelectorAll('input[type="checkbox"]').forEach((cb, i) => cb.checked = saved[i]);
-    updateProgress();
+// history modal
+const historyModal = document.getElementById('historyModal');
+document.getElementById('historyBtn').addEventListener('click', ()=>{
+  renderHistory();
+  historyModal.style.display = 'flex';
+});
+document.getElementById('closeHistory').addEventListener('click', ()=> historyModal.style.display='none');
+document.getElementById('clearHistory').addEventListener('click', ()=> {
+  if(confirm('Clear all saved history?')){ ls.removeItem('nutri_history'); renderHistory(); }
+});
+
+// render history list
+function renderHistory(){
+  const raw = ls.getItem('nutri_history');
+  const arr = raw ? JSON.parse(raw) : [];
+  const out = document.getElementById('historyList');
+  out.innerHTML = '';
+  if(arr.length===0){ out.innerHTML = '<div class="small">No history yet. Your progress will be saved automatically each day.</div>'; return; }
+  arr.forEach(entry=>{
+    const row = document.createElement('div'); row.className='row';
+    const left = document.createElement('div'); left.innerHTML = `<div style="font-weight:700">${entry.date}</div><div class="small">${entry.done}/${entry.total} items</div>`;
+    const right = document.createElement('div'); right.innerHTML = `<div style="font-weight:700">${entry.percent}%</div><div class="small">${new Date(entry.timestamp).toLocaleString()}</div>`;
+    row.appendChild(left); row.appendChild(right);
+    out.appendChild(row);
+  });
+}
+
+// save to history when user manually resets
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(confirm('Reset today checklist? This will save current state to history.')){
+    const state = JSON.parse(ls.getItem('nutri_temp_state'));
+    saveToHistory(state);
+    ls.removeItem('nutri_temp_state');
+    ls.setItem('nutri_last_date','1970-01-01'); // force new state
+    loadState(); render();
+    alert('Saved and reset for new day.');
   }
-}
+});
 
-function resetToday() {
-  const today = new Date().toLocaleDateString();
-  const total = items.length;
-  const checked = document.querySelectorAll('input[type="checkbox"]:checked').length;
-  const percent = Math.round((checked / total) * 100);
+// quick add buttons
+document.getElementById('addSpinBtn').addEventListener('click', ()=>{
+  const state = JSON.parse(ls.getItem('nutri_temp_state'));
+  state.items['spinach'] = true;
+  ls.setItem('nutri_temp_state', JSON.stringify(state)); render();
+});
+document.getElementById('addNutsBtn').addEventListener('click', ()=>{
+  const state = JSON.parse(ls.getItem('nutri_temp_state'));
+  state.items['nuts'] = true;
+  ls.setItem('nutri_temp_state', JSON.stringify(state)); render();
+});
 
-  let history = JSON.parse(localStorage.getItem('nutriHistory')) || [];
-  history.push({ date: today, completion: percent });
-  localStorage.setItem('nutriHistory', JSON.stringify(history));
+// download history CSV
+document.getElementById('downloadHistory').addEventListener('click', ()=>{
+  const raw = ls.getItem('nutri_history');
+  const arr = raw ? JSON.parse(raw) : [];
+  let csv = 'date,percent,done,total,timestamp\\n';
+  arr.forEach(e => csv += `${e.date},${e.percent},${e.done},${e.total},${e.timestamp}\\n`);
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='nutrition_history.csv'; a.click();
+  URL.revokeObjectURL(url);
+});
 
-  localStorage.removeItem('nutriChecklist');
-  document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-  updateProgress();
-  alert('Progress saved to history and reset for a new day! 🌿');
-}
-
-function viewHistory() {
-  const modal = document.getElementById('historyModal');
-  const historyList = document.getElementById('historyList');
-  const history = JSON.parse(localStorage.getItem('nutriHistory')) || [];
-
-  if (history.length === 0) {
-    historyList.innerHTML = '<p>No history recorded yet.</p>';
-  } else {
-    historyList.innerHTML = history.map(h => `<p><strong>${h.date}</strong>: ${h.completion}% complete</p>`).join('');
-  }
-  modal.style.display = 'flex';
-}
-
-function closeHistory() {
-  document.getElementById('historyModal').style.display = 'none';
-}
-
-loadProgress();
-</script></body>
+// on load
+loadState();
+render();
+scheduleMidnightReset();
+</script>
+</body>
 </html>
